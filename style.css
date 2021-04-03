@@ -1,0 +1,94 @@
+.lose{
+    display: none;
+    font-size: 20px;
+}
+.won{
+    display: none;
+    font-size: 20px;
+}
+body{
+    background-color: teal;
+}
+h1{
+    font-size: 50px;
+    display: flex;
+    justify-content: center;
+    /* text-align: center; */
+    flex-wrap: wrap;
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-top: 0px;
+    margin-bottom: 2px;
+    color: white;
+    background-color: black;
+}h2{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+#lives{
+    font-size: 30px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+#scores{
+    font-size: 30px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+#game{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+#board{
+    padding-right: 0px;
+    width: 599.5px;
+    height: 599.7px;
+    display: flex;
+    flex-wrap: wrap;
+    border: 5px solid black;
+    border-style: bold;
+    /* padding-left: 0px; */
+}
+.tile{
+    width: 60px;
+    height: 60px;
+    margin: 0px;
+    padding: 1px;
+    text-align: center;
+    border-style: bold;
+    border: 2.3px solid black;
+    /* background-color: rgb(34, 34, 66); */
+}
+footer{
+    margin-top: 10px;
+    background-color: black;
+    color: white;
+    text-align: center;
+    font: bold;
+    font-size: 20px;
+}
+#start{
+    font-size: 20px;
+    padding-top: 5px;
+    border-radius: 5px;
+    background-color: black;
+    color: white;
+    display: flex;
+    margin: auto;
+    margin-top: 0px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+}
+.snakeposn{
+    background-color: rgb(52, 23, 221);
+}
+.food{
+    /* padding: 2px; */
+    background-color: red;
+}
+.atefood{
+    background-color:grey;
+}
