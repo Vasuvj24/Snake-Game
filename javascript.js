@@ -1,21 +1,22 @@
-var flag;
-var arr;
+var flag = true;
 var oldmove;
 var i = 0; //it is the initial value  where snake started
-var ele = 27;
-var f = 3 + ele;
+var ele = 15;
+var f = 3+ele ;
+console.log(f);
 var idcount = 0;
-var movc = 0;
+var length = 1;
+var interval = 500;
+var ip;
 
-// var incrpos=tile.id[i];
 window.onload = function restart() {
   id("start").addEventListener("click", startgame);
 };
 function startgame() {
   i++;
   f++;
-  //   console.log("hello");
-  var board = arr;
+  ip = i;
+  var board;
   lives = 3;
   Scores = 0;
   id("scores").textContent = "Score: 00";
@@ -23,178 +24,166 @@ function startgame() {
   clearprevious();
   generateboard(board);
   foodposn();
-  // snakeposn();
-  let tiles = document.querySelectorAll(".tile");
-  tiles[i].classList.add("snakeposn");
-  updatemove();
+  snake();
 }
-function foodposn() {
-  //   console.log("inside food psn");
-  let tiles = document.querySelectorAll(".tile");
-  tiles[f].classList.add("food");
-  ele--;
-}
-// function snakelength(){
-//     let tiles=document.querySelectorAll(".tile");
-//    if(oldmove==left){
-//        var snakel=tiles.slice(tiles[initialposi],tiles[initialposi+1]);
-//        snakel.classList.add("snakeposn");
-//    }
-// }
-function endgame() {
-  flag = false;
-}
-function clearmovements() {
-  // if(oldmove==down)
-  clearTimeout(oldmove);
-}
-
-function updatemove() {
-  var initialposi = i;
-  oldmove = null;
-  if ((flag = true)) {
-    window.addEventListener("keydown", (e) => {
-      switch (e.key) {
-        case "ArrowLeft":
-          console.log("left pressed: " + oldmove);
-          // str = 'Left Key pressed!';
-          // console.log(oldmove+"oldmove done");
-          clearmovements();
-          if (oldmove !== "right") {
-            console.log("in left");
-            var left = setInterval(() => {
-              // console.log("leftkey");
-              // console.log(initialposi);
-              let tiles = document.querySelectorAll(".tile");
-              // console.log(tiles);
-              // console.log(initialposi);
-              tiles[initialposi].classList.remove("snakeposn");
-              initialposi -= 1;
-              // console.log(tiles[initialposi]);
-              // if(document.addEventListener('none',function(){
-              if ((initialposi + 1) % 9 == 0) {
-                initialposi = initialposi + 9;
-                lives--;
-                id("lives").textContent = "Lives: " + lives;
-                if (lives == 0) {
-                  id("lives").textContent = "You Lose!";
-                  //   endgame();
-                }
-              }
-              tiles[initialposi].classList.add("snakeposn");
-              //adding snakeatefood fucn later in order to read it
-            }, 300);
-          }
-          console.log("update");
-          oldmove = "left";
-          console.log(oldmove);
-          break;
-
-        case "ArrowUp":
-          clearmovements();
-          console.log("up pressed: " + oldmove);
-          if (oldmove !== "down") {
-            var up = setInterval(() => {
-              // clearInterval(lk);
-              // console.log("upkey");
-              // console.log(initialposi);
-              var tiles = document.querySelectorAll(".tile");
-              tiles[initialposi].classList.remove("snakeposn");
-              initialposi = initialposi - 9;
-              // console.log("unread");
-              if (initialposi == -9) {
-                initialposi = 72;
-                lives--;
-                if (lives == 0) {
-                  id("lives").textContent = "You Lose!";
-                }
-              }
-              if (initialposi < 0 && initialposi != -9) {
-                initialposi = 81 + initialposi;
-                lives--;
-                id("lives").textContent = "Lives: " + lives;
-                if (lives == 0) {
-                  id("lives").textContent = "You Lose!";
-                }
-              }
-              // console.log("read");}
-              // console.log("hello food here "+f);
-              tiles[initialposi].classList.add("snakeposn");
-              oldmove = "up";
-            }, 300);
-          }
-          break;
-        case "ArrowRight":
-          clearmovements();
-          console.log("right pressed: " + oldmove);
-          if (oldmove !== "left") {
-            //   console.log("execc");
-            var right = setInterval(() => {
-              // console.log("rightkey");
-              let tiles = document.querySelectorAll(".tile");
-              tiles[initialposi].classList.remove("snakeposn");
-              initialposi = initialposi + 1;
-              if (initialposi % 9 == 0) {
-                // console.log(initialposi - 9);
-                initialposi = initialposi - 9;
-                lives--;
-                id("lives").textContent = "Lives: " + lives;
-                if (lives == 0) {
-                  id("lives").textContent = "You Lose!";
-                  //   endgame();
-                }
-              }
-              tiles[initialposi].classList.add("snakeposn");
-              oldmove = "right";
-            }, 300);
-            // clearInterval(rk);
-          }
-          break;
-
-        case "ArrowDown":
-          // str = 'Down Key pressed!';
-          console.log("down pressed: " + oldmove);
-          clearmovements();
-          if (oldmove !== "up") {
-            var down = setInterval(() => {
-              let tiles = document.querySelectorAll(".tile");
-              // console.log(tiles);
-              // console.log(initialposi);
-              tiles[initialposi].classList.remove("snakeposn");
-              // console.log(tiles[initialposi]);
-              // if(document.addEventListener('none',function(){
-              initialposi = initialposi + 9;
-              // console.log(initialposi);
-              if (initialposi == 89) {
-                initialposi = 8;
-                lives--;
-                if (lives == 0) {
-                  id("lives").textContent = "You Lose!";
-                  //   endgame();
-                }
-              }
-              //   console.log("inside " + initialposi);
-              if (initialposi > 80 && initialposi != 89) {
-                initialposi = initialposi - 81;
-                lives--;
-                if (lives != 0) id("lives").textContent = "Lives: " + lives;
-                if (lives == 0) {
-                  id("lives").textContent = "You Lose!";
-                  //   endgame();
-                }
-              }
-              tiles[initialposi].classList.add("snakeposn");
-              oldmove = "down";
-            }, 300);
-          }
-          break;
-      }
-    });
+function snake() {
+  var arr = [ip,ip+1];
+  console.log("ip is " + ip);
+  var z = 0;
+  while (z < length) {
+    let tiles = qsa(".tile");
+    console.log(tiles[arr[z]]);
+    tiles[arr[z]].classList.add("snakeposn");
+    z++;
   }
 }
-
+function leftkey() {
+  if (oldmove !== "right" || oldmove !== "left") {
+    console.log("in left");
+    var left = setInterval(() => {
+      console.log("left pressed: " + oldmove);
+      let tiles = document.querySelectorAll(".tile");
+      tiles[ip].classList.remove("snakeposn");
+      ip -= 1;
+      if ((ip + 1) % 32 == 0) {
+        ip = ip + 32;
+        lives--;
+        id("lives").textContent = "Lives: " + lives;
+        if (lives == 0) {
+          id("lives").textContent = "You Lose!";
+        }
+      }
+      tiles[ip].classList.add("snakeposn");
+      if(ip==f){
+        tiles[ip].classList.remove("food");
+        foodposn();
+      }
+    }, interval);
+  }
+  console.log("update");
+  oldmove = "left";
+  console.log(oldmove);
+}
+function rightkey() {
+  if (oldmove !== "left" || oldmove !== "right") {
+    var right = setInterval(() => {
+      console.log("right pressed: " + oldmove);
+      let tiles = document.querySelectorAll(".tile");
+      tiles[ip].classList.remove("snakeposn");
+      ip = ip + 1;
+      if (ip % 32 == 0) {
+        ip = ip - 32;
+        lives--;
+        id("lives").textContent = "Lives: " + lives;
+        if (lives == 0) {
+          id("lives").textContent = "You Lose!";
+        }
+      }if(ip==f){
+        // console.log("inside the right key food");
+        tiles[ip].classList.remove("food");
+        foodposn();
+      }
+      tiles[ip].classList.add("snakeposn");
+    }, interval);
+    oldmove = "right";
+  }
+  console.log("inside right" + oldmove);
+}
+function upkey() {
+  if (oldmove !== "down" || oldmove !== "up") {
+    var up = setInterval(() => {
+      var tiles = document.querySelectorAll(".tile");
+      console.log("up pressed: " + oldmove);
+      tiles[ip].classList.remove("snakeposn");
+      ip = ip - 32;
+      if (ip == -32) {
+        ip = 480;
+        lives--;
+        if (lives == 0) {
+          id("lives").textContent = "You Lose!";
+        }
+      }
+      if (ip < 0 && ip != -32) {
+        ip = 512 + ip;
+        lives--;
+        id("lives").textContent = "Lives: " + lives;
+        if (lives == 0) {
+          id("lives").textContent = "You Lose!";
+        }
+      }
+      tiles[ip].classList.add("snakeposn");
+      if(ip==f){
+        tiles[ip].classList.remove("food");
+        foodposn();
+      }
+    }, interval);
+    oldmove = "up";
+  }
+  console.log(oldmove);
+}
+function downkey() {
+  if (oldmove !== "up" || oldmove != "down") {
+    var down = setInterval(() => {
+      console.log("down pressed: " + oldmove);
+      let tiles = document.querySelectorAll(".tile");
+      tiles[ip].classList.remove("snakeposn");
+      ip = ip + 32;
+      if (ip == 543) {
+        ip = 31;
+        lives--;
+        if (lives == 0) {
+          id("lives").textContent = "You Lose!";
+        }
+      }
+      if (ip > 511 && ip != 543) {
+        ip = ip - 512;
+        lives--;
+        if (lives != 0) id("lives").textContent = "Lives: " + lives;
+        if (lives == 0) {
+          id("lives").textContent = "You Lose!";
+        }
+      }
+      tiles[ip].classList.add("snakeposn");
+      if(ip==f){
+        tiles[ip].classList.remove("food");
+        foodposn();
+      }
+    }, interval);
+    oldmove = "down";
+  }
+  console.log("inside down" + oldmove);
+}
+window.onkeydown = function (event) {
+  switch (event.keyCode) {
+    case 37:
+      console.log("leftkey");
+      leftkey();
+      break;
+    case 38:
+      console.log("upkey");
+      upkey();
+      break;
+    case 39:
+      console.log("rightkey");
+      rightkey();
+      break;
+    case 40:
+      console.log("downkey");
+      downkey();
+      break;
+  }
+};
+function foodposn() {
+  console.log("inside food posn "+(f+ele));
+  let tiles = document.querySelectorAll(".tile");
+  f==3+ele;
+  // console.log("value of "+f);
+  tiles[f].classList.add("food");
+  ele +=10;
+  console.log("element posn is "+ele);
+}
 function generateboard(board) {
-  for (let j = 0; j < 81; j++) {
+  for (let j = 0; j < 512; j++) {
     var tile = document.createElement("p"); //created a tile as paragraph
     tile.id = idcount;
     idcount++;
@@ -203,7 +192,6 @@ function generateboard(board) {
     id("board").appendChild(tile);
   }
 }
-//display board
 function clearprevious() {
   flag = true;
   let tiles = qsa(".tile");
