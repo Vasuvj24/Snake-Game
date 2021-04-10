@@ -1,212 +1,133 @@
-var flag = true;
-var oldmove;
-var i = 0; //it is the initial value  where snake started
-var ele = 15;
-var f = 3+ele ;
-console.log(f);
-var idcount = 0;
-var length = 1;
-var interval = 500;
-var ip;
+var lastTime = 0; //last render time
+var Speed = 2; //speed variable
+var SnakeBody = [{ x: 10, y: 11 }]; //body of array in form of arrays
+var board = document.getElementById("board"); //board ko id leke fir use krenge
+//will be needing to maintain a last input direction
+let lastinputd = { x: 0, y: 0 }; // update it as per need
+let inputd = { x:0, y:0 }; //input direction 0 initially
+var food={x:10,y:0};
+let increase=1;//mtlb vo food khane k bad kitna grow krega
+let expandvariable=0;//this variable is for if snake increases than how much does it increase
+let rv=0;
+// console.log(board);
+// in this kind of request animation we handle the movements
 
-window.onload = function restart() {
-  id("start").addEventListener("click", startgame);
-};
-function startgame() {
-  i++;
-  f++;
-  ip = i;
-  var board;
-  lives = 3;
-  Scores = 0;
-  id("scores").textContent = "Score: 00";
-  id("lives").textContent = "Lives: " + lives;
-  clearprevious();
-  generateboard(board);
-  foodposn();
-  snake();
+function major(Timing) {
+  window.requestAnimationFrame(major);
+  var TimeSinceLastRender = (Timing - lastTime) / 1000;
+  if (TimeSinceLastRender < 1 / Speed) {
+    return;
+  }
+  // console.log("inside major");
+  lastTime = Timing;
+  update();
+  draw();
 }
-function snake() {
-  var arr = [ip,ip+1];
-  console.log("ip is " + ip);
-  var z = 0;
-  while (z < length) {
-    let tiles = qsa(".tile");
-    console.log(tiles[arr[z]]);
-    tiles[arr[z]].classList.add("snakeposn");
-    z++;
+function update(){
+  updatemove();
+  updatefood();
+}
+function draw(){
+  board.innerHTML='';
+  drawsnake();
+  drawfood();
+}
+window.requestAnimationFrame(major);
+// console.log(board);
+function drawsnake() {
+  // console.log(SnakeBody.length);
+  // board.innerHTML = "";
+  SnakeBody.forEach(points => {
+    if(expandvariable==1){
+    console.log(rv++);} 
+    var snakeElement = document.createElement("div"); //mtlb ek div bnanna h
+    //yha uske css m change krenge or us row m isse start krenge
+    snakeElement.style.gridRowStart = points.y; //grid row start m row ki konse line m krna h
+    snakeElement.style.gridColumnStart = points.x; //grid column start m column ki konse line m krna h
+    snakeElement.classList.add("snakecolor");
+    board.appendChild(snakeElement);
+    // drawfood();
+  });
+}
+function updatemove() {
+  snaketiles();
+  var inputd=inputdir();
+  for (let i = SnakeBody.length - 2; i >= 0; i--) {
+    SnakeBody[i + 1] = SnakeBody[i]; //length -2 kra or last third p sa or phit last second wale ko l-2 ki posn p lado
+  }
+  // console.log("x: " + inputd.x + "y: " + inputd.y);
+  //now changing the variables
+  //yha p head change kra or usme  kra
+  SnakeBody[0].x =SnakeBody[0].x+ inputd.x;
+  SnakeBody[0].y =SnakeBody[0].y+ inputd.y;
+  // updatefood();
+}
+function drawfood(){
+  // console.log("inside draw food")
+  var foodposn = document.createElement("div"); 
+  foodposn.style.gridRowStart = food.y; 
+  foodposn.style.gridColumnStart = food.x; 
+  foodposn.classList.add("foodcolor");
+  // console.log(foodposn);
+  board.appendChild(foodposn);
+}
+function updatefood(){
+  // console.log("inside update food")
+  if(onsnake(food)){
+    expandsnake(increase);
+    food={x:10,y:11};
   }
 }
-function leftkey() {
-  if (oldmove !== "right" || oldmove !== "left") {
-    console.log("in left");
-    var left = setInterval(() => {
-      console.log("left pressed: " + oldmove);
-      let tiles = document.querySelectorAll(".tile");
-      tiles[ip].classList.remove("snakeposn");
-      ip -= 1;
-      if ((ip + 1) % 32 == 0) {
-        ip = ip + 32;
-        lives--;
-        id("lives").textContent = "Lives: " + lives;
-        if (lives == 0) {
-          id("lives").textContent = "You Lose!";
-        }
-      }
-      tiles[ip].classList.add("snakeposn");
-      if(ip==f){
-        tiles[ip].classList.remove("food");
-        foodposn();
-      }
-    }, interval);
+function expandsnake(amount){
+  expandvariable += amount;//ye expand snake variable ko incresase krega if onsnake function is true
+}
+function onsnake(position){
+  return SnakeBody.some(points=>{
+    // console.log("inside on snake func"+points.x+" "+points.y)
+    return equalposition(position,points);//yha posints and position gye h ab ye dono compare honge 
+  })
+}
+function equalposition(posn1,posn2){
+  return posn1.x==posn2.x && posn1.y==posn2.y;
+}
+function snaketiles(){
+  console.log(SnakeBody.length+" snake body l");
+  // console.log("inside snaketile");
+  for(i=0;i<expandvariable;i++){
+    SnakeBody.push({...SnakeBody[SnakeBody.length-1]});
   }
-  console.log("update");
-  oldmove = "left";
-  console.log(oldmove);
+  expandvariable==0;
+  console.log(expandvariable+" expand variable");
 }
-function rightkey() {
-  if (oldmove !== "left" || oldmove !== "right") {
-    var right = setInterval(() => {
-      console.log("right pressed: " + oldmove);
-      let tiles = document.querySelectorAll(".tile");
-      tiles[ip].classList.remove("snakeposn");
-      ip = ip + 1;
-      if (ip % 32 == 0) {
-        ip = ip - 32;
-        lives--;
-        id("lives").textContent = "Lives: " + lives;
-        if (lives == 0) {
-          id("lives").textContent = "You Lose!";
-        }
-      }if(ip==f){
-        // console.log("inside the right key food");
-        tiles[ip].classList.remove("food");
-        foodposn();
-      }
-      tiles[ip].classList.add("snakeposn");
-    }, interval);
-    oldmove = "right";
-  }
-  console.log("inside right" + oldmove);
+//arrow keys
+window.addEventListener('keydown',e=>{
+    switch(e.key){
+        case 'ArrowUp':
+            console.log("arrow up")
+            if(lastinputd.y !==0)break;
+            inputd={x:0,y:-1};
+            break;
+        case 'ArrowDown':
+          console.log("arrow down");
+          if(lastinputd.y !==0)break;
+            inputd={x:0,y:+1};
+            break;
+        case 'ArrowRight':
+          console.log("arrow left");
+          if(lastinputd.x !==0)break;
+            inputd={x:+1,y:0};
+            break;
+        case 'ArrowLeft':
+          console.log("arrow right");
+          if(lastinputd.x !==0)break;  
+          inputd={x:-1,y:0};
+            break;
+    }
+})
+//now asking for inpuut direction
+function inputdir() {
+  lastinputd = inputd; //storing the last input direction
+  return inputd;
 }
-function upkey() {
-  if (oldmove !== "down" || oldmove !== "up") {
-    var up = setInterval(() => {
-      var tiles = document.querySelectorAll(".tile");
-      console.log("up pressed: " + oldmove);
-      tiles[ip].classList.remove("snakeposn");
-      ip = ip - 32;
-      if (ip == -32) {
-        ip = 480;
-        lives--;
-        if (lives == 0) {
-          id("lives").textContent = "You Lose!";
-        }
-      }
-      if (ip < 0 && ip != -32) {
-        ip = 512 + ip;
-        lives--;
-        id("lives").textContent = "Lives: " + lives;
-        if (lives == 0) {
-          id("lives").textContent = "You Lose!";
-        }
-      }
-      tiles[ip].classList.add("snakeposn");
-      if(ip==f){
-        tiles[ip].classList.remove("food");
-        foodposn();
-      }
-    }, interval);
-    oldmove = "up";
-  }
-  console.log(oldmove);
-}
-function downkey() {
-  if (oldmove !== "up" || oldmove != "down") {
-    var down = setInterval(() => {
-      console.log("down pressed: " + oldmove);
-      let tiles = document.querySelectorAll(".tile");
-      tiles[ip].classList.remove("snakeposn");
-      ip = ip + 32;
-      if (ip == 543) {
-        ip = 31;
-        lives--;
-        if (lives == 0) {
-          id("lives").textContent = "You Lose!";
-        }
-      }
-      if (ip > 511 && ip != 543) {
-        ip = ip - 512;
-        lives--;
-        if (lives != 0) id("lives").textContent = "Lives: " + lives;
-        if (lives == 0) {
-          id("lives").textContent = "You Lose!";
-        }
-      }
-      tiles[ip].classList.add("snakeposn");
-      if(ip==f){
-        tiles[ip].classList.remove("food");
-        foodposn();
-      }
-    }, interval);
-    oldmove = "down";
-  }
-  console.log("inside down" + oldmove);
-}
-window.onkeydown = function (event) {
-  switch (event.keyCode) {
-    case 37:
-      console.log("leftkey");
-      leftkey();
-      break;
-    case 38:
-      console.log("upkey");
-      upkey();
-      break;
-    case 39:
-      console.log("rightkey");
-      rightkey();
-      break;
-    case 40:
-      console.log("downkey");
-      downkey();
-      break;
-  }
-};
-function foodposn() {
-  console.log("inside food posn "+(f+ele));
-  let tiles = document.querySelectorAll(".tile");
-  f==3+ele;
-  // console.log("value of "+f);
-  tiles[f].classList.add("food");
-  ele +=10;
-  console.log("element posn is "+ele);
-}
-function generateboard(board) {
-  for (let j = 0; j < 512; j++) {
-    var tile = document.createElement("p"); //created a tile as paragraph
-    tile.id = idcount;
-    idcount++;
-    tile.textContent = tile.id;
-    tile.classList.add("tile");
-    id("board").appendChild(tile);
-  }
-}
-function clearprevious() {
-  flag = true;
-  let tiles = qsa(".tile");
-  for (let i = 0; i < tiles.length; i++) {
-    tiles[i].remove("snakeposn");
-    tiles[i].remove("food");
-  }
-  idcount = 0;
-}
-function qs(selector) {
-  return document.querySelector(selector);
-}
-function qsa(selector) {
-  return document.querySelectorAll(selector);
-}
-function id(id) {
-  return document.getElementById(id);
-}
+
+
