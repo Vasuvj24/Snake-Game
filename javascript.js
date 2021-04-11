@@ -1,18 +1,21 @@
 var lastTime = 0; //last render time
-var Speed = 2; //speed variable
+var Speed = 4; //speed variable
 var SnakeBody = [{ x: 10, y: 11 }]; //body of array in form of arrays
 var board = document.getElementById("board"); //board ko id leke fir use krenge
 //will be needing to maintain a last input direction
 let lastinputd = { x: 0, y: 0 }; // update it as per need
 let inputd = { x:0, y:0 }; //input direction 0 initially
-var food={x:10,y:0};
+var food=randomposiongrid();
+console.log(food)
 let increase=1;//mtlb vo food khane k bad kitna grow krega
 let expandvariable=0;//this variable is for if snake increases than how much does it increase
-let rv=0;
+// let rv=0;
+let scores=00;
 // console.log(board);
 // in this kind of request animation we handle the movements
 
-function major(Timing) {
+function major(Timing) {//recursion calling a function
+  document.getElementById("score").textContent="Scores: "+scores
   window.requestAnimationFrame(major);
   var TimeSinceLastRender = (Timing - lastTime) / 1000;
   if (TimeSinceLastRender < 1 / Speed) {
@@ -23,6 +26,20 @@ function major(Timing) {
   update();
   draw();
 }
+function foodposi(){//setting the food position randomly
+  let newfoodposi;
+  while(newfoodposi ==null||onsnake(newfoodposi)){
+    newfoodposi = randomposiongrid();
+  }
+  return newfoodposi;
+}
+function randomposiongrid(){
+  return{
+    x:Math.floor(Math.random()*21)+1,
+    y:Math.floor(Math.random()*21)+1
+  }
+}
+
 function update(){
   updatemove();
   updatefood();
@@ -38,8 +55,6 @@ function drawsnake() {
   // console.log(SnakeBody.length);
   // board.innerHTML = "";
   SnakeBody.forEach(points => {
-    if(expandvariable==1){
-    console.log(rv++);} 
     var snakeElement = document.createElement("div"); //mtlb ek div bnanna h
     //yha uske css m change krenge or us row m isse start krenge
     snakeElement.style.gridRowStart = points.y; //grid row start m row ki konse line m krna h
@@ -74,8 +89,11 @@ function drawfood(){
 function updatefood(){
   // console.log("inside update food")
   if(onsnake(food)){
+    scores++;
+    document.getElementById("score").textContent="Scores: "+scores
     expandsnake(increase);
-    food={x:10,y:11};
+    // food={x:10,y:11};
+    food=foodposi();
   }
 }
 function expandsnake(amount){
@@ -91,13 +109,13 @@ function equalposition(posn1,posn2){
   return posn1.x==posn2.x && posn1.y==posn2.y;
 }
 function snaketiles(){
-  console.log(SnakeBody.length+" snake body l");
+  // console.log(SnakeBody.length+" snake body l");
   // console.log("inside snaketile");
   for(i=0;i<expandvariable;i++){
     SnakeBody.push({...SnakeBody[SnakeBody.length-1]});
   }
-  expandvariable==0;
-  console.log(expandvariable+" expand variable");
+  expandvariable=0;
+  // console.log(expandvariable+" expand variable");
 }
 //arrow keys
 window.addEventListener('keydown',e=>{
@@ -129,5 +147,6 @@ function inputdir() {
   lastinputd = inputd; //storing the last input direction
   return inputd;
 }
+
 
 
